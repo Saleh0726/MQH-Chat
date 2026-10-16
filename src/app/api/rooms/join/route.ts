@@ -6,6 +6,8 @@ const schema = z.object({ code: z.string().trim().min(4).max(100) });
 export async function POST(request: Request) {
   const userId = await getSessionUserId();
   if (!userId) return NextResponse.json({ error: "سجّل الدخول أولًا." }, { status: 401 });
+  const account = await prisma.user.findUnique({ where: { id: userId }, select: { isSuspended: true } });
+  if (!account || account.isSuspended) return NextResponse.json({ error: "حسابك مقيّد من الإدارة." }, { status: 403 });
   const parsed = schema.safeParse(await request.json());
   if (!parsed.success) return NextResponse.json({ error: "أدخل كود دعوة صحيحًا." }, { status: 400 });
   const code = parsed.data.code.toUpperCase();
