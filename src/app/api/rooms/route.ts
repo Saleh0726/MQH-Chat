@@ -7,6 +7,8 @@ import { getSessionUserId } from "@/lib/session";
 export async function GET() {
   const userId = await getSessionUserId();
   if (!userId) return NextResponse.json({ error: "سجّل الدخول أولًا." }, { status: 401 });
+  const account = await prisma.user.findUnique({ where: { id: userId }, select: { isSuspended: true } });
+  if (!account || account.isSuspended) return NextResponse.json({ error: "حسابك مقيّد من الإدارة." }, { status: 403 });
   const memberships = await prisma.membership.findMany({
     where: { userId }, include: { room: { include: { messages: { orderBy: { createdAt: "desc" }, take: 1, include: { user: { select: { username: true } } } }, _count: { select: { memberships: true } } } } },
     orderBy: { joinedAt: "desc" }
