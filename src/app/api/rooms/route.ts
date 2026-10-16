@@ -9,6 +9,8 @@ export async function GET() {
   if (!userId) return NextResponse.json({ error: "سجّل الدخول أولًا." }, { status: 401 });
   const account = await prisma.user.findUnique({ where: { id: userId }, select: { isSuspended: true } });
   if (!account || account.isSuspended) return NextResponse.json({ error: "حسابك مقيّد من الإدارة." }, { status: 403 });
+  const account = await prisma.user.findUnique({ where: { id: userId }, select: { isSuspended: true } });
+  if (!account || account.isSuspended) return NextResponse.json({ error: "حسابك مقيّد من الإدارة." }, { status: 403 });
   const memberships = await prisma.membership.findMany({
     where: { userId }, include: { room: { include: { messages: { orderBy: { createdAt: "desc" }, take: 1, include: { user: { select: { username: true } } } }, _count: { select: { memberships: true } } } } },
     orderBy: { joinedAt: "desc" }
@@ -19,6 +21,8 @@ const schema = z.object({ name: z.string().trim().min(2).max(60) });
 export async function POST(request: Request) {
   const userId = await getSessionUserId();
   if (!userId) return NextResponse.json({ error: "سجّل الدخول أولًا." }, { status: 401 });
+  const account = await prisma.user.findUnique({ where: { id: userId }, select: { isSuspended: true } });
+  if (!account || account.isSuspended) return NextResponse.json({ error: "حسابك مقيّد من الإدارة." }, { status: 403 });
   const parsed = schema.safeParse(await request.json());
   if (!parsed.success) return NextResponse.json({ error: "اسم الغرفة يجب أن يكون بين حرفين و60 حرفًا." }, { status: 400 });
   try {
