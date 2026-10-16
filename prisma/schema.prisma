@@ -59,3 +59,15 @@ model Invite {
   room        Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
   createdBy   User     @relation("InviteCreator", fields: [createdById], references: [id], onDelete: Cascade)
 }
+
+model PasswordResetRequest {
+  id        String   @id @default(cuid())
+  email     String
+  username  String?
+  message   String?  @db.VarChar(500)
+  resetCode String?  @unique
+  status    String   @default("pending")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([status, createdAt])
+}
