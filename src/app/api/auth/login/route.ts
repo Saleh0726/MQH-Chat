@@ -12,6 +12,7 @@ export async function POST(request: Request) {
     const { email, password } = parsed.data;
     const user = await prisma.user.findFirst({ where: { email: { equals: email, mode: "insensitive" } } });
     if (!user || !(await bcrypt.compare(password, user.passwordHash))) return NextResponse.json({ error: "البريد الإلكتروني أو كلمة المرور غير صحيحة." }, { status: 401 });
+    if (user.isSuspended) return NextResponse.json({ error: "حسابك مقيّد من الإدارة. "+(user.suspensionReason || "يرجى التواصل مع الإدارة.") }, { status: 403 });
     await createSession(user.id);
     return NextResponse.json({ user: { id: user.id, username: user.username, email: user.email } });
   } catch (error) {
