@@ -32,6 +32,20 @@ export default function Home() {
   useEffect(() => { document.documentElement.dataset.theme = theme; window.localStorage.setItem("mqh-theme", theme); }, [theme]);
   useEffect(() => { if (user) void loadRooms(); }, [user]);
   useEffect(() => { if (activeRoom && user) void loadMessages(activeRoom.id); }, [activeRoom, user]);
+  // Refresh messages while a room is open so participants see each other's messages
+  // without having to reload the page. The API checks room membership on every request.
+  useEffect(() => {
+    if (!activeRoom || !user) return;
+    const roomId = activeRoom.id;
+    const timer = window.setInterval(() => { void loadMessages(roomId); }, 2500);
+    return () => window.clearInterval(timer);
+  }, [activeRoom?.id, user?.id]);
+  // Keep room previews and member counts up to date in other open tabs.
+  useEffect(() => {
+    if (!user) return;
+    const timer = window.setInterval(() => { void loadRooms(); }, 10000);
+    return () => window.clearInterval(timer);
+  }, [user?.id]);
 
   async function loadUser() {
     try { const r = await fetch("/api/auth/me"); const d = await r.json(); if (d.user) setUser(d.user); } catch {}
@@ -40,7 +54,7 @@ export default function Home() {
     try { const r = await fetch("/api/rooms"); const d = await r.json(); if (r.ok) { setRooms(d.rooms); setActiveRoom(old => old ? (d.rooms.find((x: Room) => x.id === old.id) || old) : (d.rooms[0] || null)); } } catch {}
   }
   async function loadMessages(roomId: string) {
-    try { const r = await fetch(`/api/rooms/${roomId}/messages`); const d = await r.json(); if (r.ok) setMessages(d.messages); } catch {}
+    try { const r = await fetch(`/api/rooms/${roomId}/messages`, { cache: "no-store" }); const d = await r.json(); if (r.ok) setMessages(d.messages); } catch {}
   }
   async function submitAuth(e: FormEvent) {
     e.preventDefault(); setBusy(true); setAuthError("");
