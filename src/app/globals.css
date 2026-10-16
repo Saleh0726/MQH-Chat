@@ -109,3 +109,128 @@
   .message-bubble { padding:9px 11px; font-size:12px; }
   .composer-area { padding:9px 10px 11px; }
 }
+
+
+/* Telegram-inspired MQH-Chat refresh */
+:root {
+  --bg:#0e1621;
+  --panel:#17212b;
+  --panel-2:#202b36;
+  --panel-3:#263442;
+  --border:#263543;
+  --text:#f2f5f8;
+  --muted:#91a3b5;
+  --subtle:#6e8296;
+  --accent:#3390ec;
+  --accent-2:#2481d7;
+  --accent-soft:rgba(51,144,236,.16);
+  --green:#4dbd87;
+  --shadow:0 12px 35px rgba(0,0,0,.24);
+}
+:root[data-theme="light"] {
+  --bg:#dce5ec;
+  --panel:#ffffff;
+  --panel-2:#f1f5f8;
+  --panel-3:#e4ebf1;
+  --border:#e0e7ed;
+  --text:#17212b;
+  --muted:#708090;
+  --subtle:#96a5b3;
+  --accent:#3390ec;
+  --accent-2:#2481d7;
+  --accent-soft:rgba(51,144,236,.12);
+  --green:#31a879;
+  --shadow:0 12px 35px rgba(28,51,72,.12);
+}
+html,body { font-family: Arial,"Segoe UI",Tahoma,sans-serif; }
+.app-shell { grid-template-columns: minmax(290px, 31%) minmax(0,1fr); gap:0; background:var(--bg); }
+.sidebar { background:var(--panel); border-left:1px solid var(--border); padding:0 0 10px; }
+.sidebar-top { padding:16px 18px 13px; margin:0; min-height:64px; }
+.brand-lockup { font-size:18px; }
+.brand-lockup .brand-mark,.auth-brand .brand-mark,.mobile-brand .brand-mark { background:var(--accent); box-shadow:none; border-radius:50%; }
+.brand-dash { color:var(--accent); }
+.new-chat-btn { margin:10px 14px 8px; width:calc(100% - 28px); height:42px; border-radius:10px; background:var(--accent); color:white; border:0; justify-content:center; }
+.new-chat-btn>svg,.shortcut { color:white; }
+.sidebar-label { margin:14px 18px 9px; }
+.search-box { margin:0 12px; height:40px; background:var(--panel-2); border:1px solid transparent; border-radius:10px; }
+.search-box:focus-within { border-color:var(--accent); }
+.room-list { margin:8px 0 0; padding:0 5px; }
+.room-item { border-radius:0; border-bottom:1px solid var(--border); padding:12px 13px; margin:0; gap:12px; }
+.room-item:hover { background:var(--panel-2); }
+.room-item.active { background:var(--accent-soft); border-color:transparent; }
+.room-avatar { width:48px; height:48px; border-radius:50%; background:#527da3; color:white; }
+.room-item:nth-child(4n+2) .room-avatar { background:#c27a55; }
+.room-item:nth-child(4n+3) .room-avatar { background:#8a70b0; }
+.room-item:nth-child(4n+4) .room-avatar { background:#3c9b89; }
+.room-item.active .room-avatar { background:var(--accent); color:white; }
+.room-meta { gap:6px; }
+.room-meta strong { font-size:14px; }
+.room-meta span { font-size:12px; }
+.room-count { border-radius:20px; background:var(--accent); color:white; padding:3px 7px; }
+.sidebar-bottom { padding:0 13px; }
+.security-note { border-radius:10px; }
+.profile-row { padding:12px 2px 0; }
+.chat-area { background:var(--bg); }
+.topbar { height:64px; background:var(--panel); border-bottom:1px solid var(--border); padding:0 22px; }
+.breadcrumb { font-size:12px; gap:10px; }
+.breadcrumb strong { font-size:15px; }
+.topbar-actions .icon-btn,.topbar-actions .theme-switch { border:0; background:transparent; }
+.outline-btn { border-radius:9px; }
+.room-heading { background:var(--panel); padding:12px 22px; min-height:74px; border-bottom:1px solid var(--border); }
+.room-heading-icon { width:46px; height:46px; border-radius:50%; background:var(--accent); color:white; border:0; }
+.room-heading h1 { font-size:16px; letter-spacing:0; }
+.room-heading-text p { margin-top:5px; font-size:11px; }
+.live-dot { width:6px; height:6px; box-shadow:none; }
+.live-label { color:var(--muted); font-weight:500; }
+.messages-wrap {
+  background-color:var(--bg);
+  background-image:radial-gradient(rgba(130,158,180,.10) .8px,transparent .8px);
+  background-size:18px 18px;
+  padding:22px 5% 28px;
+}
+.date-divider { margin-bottom:24px; }
+.date-divider span { background:rgba(23,33,43,.78); color:#d6e0e8; padding:5px 12px; border-radius:15px; }
+:root[data-theme="light"] .date-divider span { background:rgba(90,113,132,.72); color:white; }
+.messages-list { max-width:960px; gap:12px; }
+.message-row { max-width:78%; gap:0; }
+.message-avatar { display:none; }
+.message-content { gap:0; }
+.message-byline { padding:0 12px 3px; }
+.message-byline strong { color:var(--accent); font-size:11px; }
+.message-bubble { background:var(--panel); border:0; border-radius:4px 14px 14px 14px; padding:8px 12px; font-size:13px; line-height:1.65; box-shadow:0 1px 1px rgba(0,0,0,.08); }
+.message-row.mine .message-bubble { background:#2b5278; border:0; border-radius:14px 4px 14px 14px; color:#f4f8fc; }
+:root[data-theme="light"] .message-row.mine .message-bubble { background:#d9fdd3; color:#17212b; }
+.message-row.mine .message-byline { justify-content:flex-start; }
+.message-row.mine .message-byline strong { color:var(--muted); }
+.composer-area { padding:10px 4% 12px; background:var(--bg); }
+.composer { border:0; background:var(--panel); border-radius:14px; padding:7px 10px; box-shadow:0 2px 8px rgba(0,0,0,.10); }
+.composer:focus-within { outline:1px solid var(--accent); border-color:transparent; }
+.composer-extra { background:transparent; color:var(--muted); }
+.send-btn { background:var(--accent); border-radius:50%; width:38px; height:38px; }
+.composer input { font-size:14px; padding:10px 7px; }
+.composer-foot { display:none; }
+.app-footer { display:none; }
+.welcome-orb { background:var(--accent-soft); border:0; color:var(--accent); border-radius:50%; box-shadow:none; }
+.welcome-tag { color:var(--accent); background:var(--accent-soft); border:0; }
+.welcome-state h2 span { color:var(--accent); }
+.invite-code-card { border-radius:12px; }
+.primary-btn { background:var(--accent); box-shadow:none; }
+.primary-btn:hover { background:var(--accent-2); filter:none; }
+.theme-switch,.icon-btn { border-radius:50%; }
+.modal-card { border-radius:16px; }
+@media(max-width:1050px) {
+  .app-shell { grid-template-columns:270px minmax(0,1fr); }
+  .messages-wrap { padding-left:4%; padding-right:4%; }
+}
+@media(max-width:760px) {
+  .app-shell,.app-shell.sidebar-collapsed { display:block; }
+  .sidebar { padding:0 0 10px; }
+  .sidebar-collapsed .sidebar { padding:0 0 10px; }
+  .topbar { height:60px; padding:0 12px; }
+  .room-heading { padding:10px 14px; }
+  .room-heading-actions { padding-right:0; }
+  .messages-wrap { padding:16px 10px 20px; }
+  .message-row { max-width:92%; }
+  .composer-area { padding:8px 9px 10px; }
+  .composer { border-radius:22px; padding:5px 8px; }
+}
