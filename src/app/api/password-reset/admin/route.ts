@@ -2,16 +2,12 @@ import { NextResponse } from "next/server";
 import { randomBytes } from "node:crypto";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
+import { isAdminSession } from "@/lib/admin-session";
 
-function authorized(request: Request) {
-  const expected = process.env.CHAT_ADMIN_PASSWORD;
-  return Boolean(expected && expected.length >= 12 && request.headers.get("x-admin-password") === expected);
-}
-
-export async function GET(request: Request) {
-  if (!authorized(request)) return NextResponse.json({ error: "كلمة مرور الإدارة غير صحيحة." }, { status: 401 });
+export async function GET() {
+  if (!await isAdminSession()) return NextResponse.json({ error: "يجب تسجيل الدخول إلى لوحة الإدارة." }, { status: 401 });
   try {
-    const requests = await prisma.passwordResetRequest.findMany({ orderBy: { createdAt: "desc" }, take: 100 });
+    const requests = await prisma.passwordResetRequest.findMany({ select: { id: true, email: true, username: true, message: true, status: true, createdAt: true, updatedAt: true }, orderBy: { createdAt: "desc" }, take: 100 });
     return NextResponse.json({ requests });
   } catch {
     return NextResponse.json({ error: "قاعدة البيانات غير مهيأة لطلبات الاستعادة بعد." }, { status: 500 });
@@ -20,7 +16,7 @@ export async function GET(request: Request) {
 
 const schema = z.object({ id: z.string().min(1), action: z.enum(["issue", "close"]), code: z.string().trim().min(6).max(32).optional() });
 export async function POST(request: Request) {
-  if (!authorized(request)) return NextResponse.json({ error: "كلمة مرور الإدارة غير صحيحة." }, { status: 401 });
+  if (!await isAdminSession()) return NextResponse.json({ error: "يجب تسجيل الدخول إلى لوحة الإدارة." }, { status: 401 });
   const parsed = schema.safeParse(await request.json());
   if (!parsed.success) return NextResponse.json({ error: "بيانات الطلب غير صحيحة." }, { status: 400 });
   try {
