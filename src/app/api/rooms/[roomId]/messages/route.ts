@@ -6,6 +6,8 @@ type Context = { params: Promise<{ roomId: string }> };
 export async function GET(_request: Request, context: Context) {
   const userId = await getSessionUserId();
   if (!userId) return NextResponse.json({ error: "سجّل الدخول أولًا." }, { status: 401 });
+  const account = await prisma.user.findUnique({ where: { id: userId }, select: { isSuspended: true } });
+  if (!account || account.isSuspended) return NextResponse.json({ error: "حسابك مقيّد من الإدارة." }, { status: 403 });
   const { roomId } = await context.params;
   const member = await prisma.membership.findUnique({ where: { userId_roomId: { userId, roomId } } });
   if (!member) return NextResponse.json({ error: "لا تملك صلاحية الوصول لهذه الغرفة." }, { status: 403 });
