@@ -30,7 +30,12 @@ export default function AdminControlPage() {
       if(!r.ok) throw new Error(d.error||"تعذر تحميل البيانات. سجّل الدخول إلى لوحة الإدارة أولًا.");
       setData(d);
       if(!selectedUser && d.users[0]) setSelectedUser(d.users[0].id);
-      if(!roomId && d.rooms[0]) { setSelectedRoom(d.rooms[0].id); }
+      if(!roomId && d.rooms[0]) {
+        setSelectedRoom(d.rooms[0].id);
+        const chatResponse = await fetch("/api/admin/control?roomId="+encodeURIComponent(d.rooms[0].id),{cache:"no-store"});
+        const chatData = await chatResponse.json();
+        if(chatResponse.ok) setData(chatData);
+      }
       return d;
     } catch(e) { setError(e instanceof Error?e.message:"حدث خطأ."); }
   }
