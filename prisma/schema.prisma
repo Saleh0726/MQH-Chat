@@ -86,8 +86,18 @@ model Notification {
   title     String   @db.VarChar(160)
   body      String   @db.VarChar(1500)
   userId    String?
-  readAt    DateTime?
   createdAt DateTime @default(now())
   user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reads     NotificationRead[]
   @@index([userId, createdAt])
+}
+
+model NotificationRead {
+  id             String       @id @default(cuid())
+  userId         String
+  notificationId String
+  readAt         DateTime     @default(now())
+  notification   Notification @relation(fields: [notificationId], references: [id], onDelete: Cascade)
+  @@unique([userId, notificationId])
+  @@index([userId, readAt])
 }
