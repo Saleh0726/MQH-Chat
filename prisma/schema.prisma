@@ -13,6 +13,9 @@ model User {
   email        String        @unique
   passwordHash String
   createdAt    DateTime      @default(now())
+  isSuspended  Boolean       @default(false)
+  suspensionReason String?   @db.VarChar(500)
+  notifications Notification[]
   memberships  Membership[]
   messages     Message[]
   sentInvites  Invite[]      @relation("InviteCreator")
@@ -76,4 +79,15 @@ model AdminCredential {
   id           String   @id @default("main")
   passwordHash String
   updatedAt    DateTime @updatedAt
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  title     String   @db.VarChar(160)
+  body      String   @db.VarChar(1500)
+  userId    String?
+  readAt    DateTime?
+  createdAt DateTime @default(now())
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@index([userId, createdAt])
 }
